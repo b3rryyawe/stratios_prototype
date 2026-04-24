@@ -4,9 +4,23 @@ import random
 
 st.set_page_config(page_title="STRATIOS", layout="wide")
 
-st.title("STRATIOS | PROTOTYPE STRATEGY ENGINE")
-st.markdown("**ROLE:** CEO of a global EV manufacturer")
-st.markdown("**CONTEXT:** Lithium supply shock disrupting global supply chains")
+# =========================================================
+# START SCREEN
+# =========================================================
+
+if "started" not in st.session_state:
+    st.session_state.started = False
+
+if not st.session_state.started:
+    st.title("STRATIOS | PROTOTYPE STRATEGY ENGINE")
+    st.markdown("**ROLE:** CEO of a global EV manufacturer")
+    st.markdown("**CONTEXT:** Lithium supply shock disrupting global supply chains")
+
+    if st.button("Begin"):
+        st.session_state.started = True
+        st.rerun()
+
+    st.stop()
 
 # =========================================================
 # BASE INPUTS
@@ -63,95 +77,23 @@ def insights(choice, stage):
     st.markdown("---")
     st.subheader(f"STRATEGIC INSIGHTS — {stage}")
 
-    if choice == "raise_prices":
-        st.write("""
-You chose to leverage pricing power as a short-term buffer against input cost shocks.
+    if choice == "Raise EV prices":
+        st.write("Pricing power strategy insights...")
 
-Pros:
-- Immediately improves revenue per unit and protects margins
-- Signals premium positioning
-- Offsets short-term inflation
+    elif choice == "Keep EV prices stable":
+        st.write("Stable pricing strategy insights...")
 
-Cons:
-- Higher demand elasticity risk
-- Possible customer switching
-- Potential market share loss
-""")
+    elif choice == "Prioritise higher-margin EVs":
+        st.write("Margin optimisation strategy insights...")
 
-    elif choice == "keep_prices":
-        st.write("""
-You chose to protect volume stability over margin expansion.
+    elif choice == "Diversify supply chain":
+        st.write("Diversification strategy insights...")
 
-Pros:
-- Preserves market share
-- Maintains competitiveness
-- Avoids demand contraction
+    elif choice == "Invest in mining and refining":
+        st.write("Vertical integration strategy insights...")
 
-Cons:
-- Margin compression
-- Profit sensitivity to shocks
-- No inflation pass-through
-""")
-
-    elif choice == "prioritise_high_margin":
-        st.write("""
-You prioritise higher-margin EVs.
-
-Pros:
-- Better unit economics
-- Higher capital efficiency
-- Stronger resilience
-
-Cons:
-- Lower volume
-- Weaker mass-market position
-- Higher volatility
-""")
-
-    elif choice == "diversify":
-        st.write("""
-You diversify supply chains.
-
-Pros:
-- Lower geopolitical risk
-- Better resilience
-- Stronger supplier leverage
-
-Cons:
-- Higher costs
-- Inefficiencies
-- Slow benefits
-""")
-
-    elif choice == "integrate":
-        st.write("""
-You integrate vertically.
-
-Pros:
-- Greater control
-- Margin capture
-- Strategic autonomy
-
-Cons:
-- High capital cost
-- Less flexibility
-- Operational risk
-""")
-
-    elif choice == "redesign":
-        st.write("""
-You redesign battery architecture.
-
-Pros:
-- Lower lithium dependency
-- Long-term resilience
-- Tech differentiation
-
-Cons:
-- R&D cost
-- Transition inefficiency
-- Execution risk
-""")
+    elif choice == "Redesign EVs to be less reliant on lithium":
+        st.write("Redesign strategy insights...")
 
 
 # =========================================================
@@ -170,7 +112,7 @@ st.write(f"Revenue: £{base_rev:,}")
 st.write(f"Profit: £{base_profit:,}")
 
 # =========================================================
-# SHOCK (SESSION STATE)
+# SHOCK INIT
 # =========================================================
 
 if "inputs" not in st.session_state:
@@ -182,7 +124,9 @@ if st.button("Apply Shock"):
     st.session_state.shock_applied = True
 
 if st.session_state.shock_applied:
-    st.success(f"Shock Applied — multiplier: {round(st.session_state.shock,2)}")
+
+    # REMOVED multiplier display → replaced with clean label
+    st.subheader("NEW STATS")
 
     prod_s, cost_s = model(st.session_state.inputs)
     rev_s, prof_s = calc(prod_s, base_price, cost_s)
@@ -193,7 +137,7 @@ if st.session_state.shock_applied:
     st.write(f"Profit: £{round(prof_s):,} ({round(pct(prof_s, base_profit),2)}%)")
 
     # =========================================================
-    # DECISION 1
+    # DECISION 1 (RENAMED)
     # =========================================================
 
     st.markdown("---")
@@ -201,20 +145,23 @@ if st.session_state.shock_applied:
 
     d1 = st.radio(
         "Choose strategy:",
-        ["raise_prices", "keep_prices", "prioritise_high_margin"]
+        [
+            "Raise EV prices",
+            "Keep EV prices stable",
+            "Prioritise higher-margin EVs"
+        ]
     )
 
     if st.button("Apply Decision 1"):
 
-        if d1 == "raise_prices":
+        if d1 == "Raise EV prices":
             base_price *= 1.10
             base_prod *= 0.98
-            base_cost *= 1.00
 
-        elif d1 == "keep_prices":
+        elif d1 == "Keep EV prices stable":
             base_cost *= 1.02
 
-        elif d1 == "prioritise_high_margin":
+        elif d1 == "Prioritise higher-margin EVs":
             base_price *= 1.05
             base_prod *= 0.85
             base_cost *= 0.95
@@ -233,7 +180,7 @@ if st.session_state.shock_applied:
         insights(d1, "AFTER DECISION 1")
 
         # =========================================================
-        # DECISION 2
+        # DECISION 2 (RENAMED)
         # =========================================================
 
         st.markdown("---")
@@ -241,24 +188,28 @@ if st.session_state.shock_applied:
 
         d2 = st.radio(
             "Choose structural strategy:",
-            ["redesign", "diversify", "integrate"]
+            [
+                "Redesign EVs to be less reliant on lithium",
+                "Diversify supply chain",
+                "Invest in mining and refining"
+            ]
         )
 
         if st.button("Apply Decision 2"):
 
-            if d2 == "diversify":
+            if d2 == "Diversify supply chain":
                 st.session_state.inputs["supply_reduction"] *= 0.6
                 st.session_state.inputs["input_price_increase"] *= 0.7
                 st.session_state.inputs["dependency"] *= 0.75
                 st.session_state.inputs["flexibility"] *= 1.1
 
-            elif d2 == "integrate":
+            elif d2 == "Invest in mining and refining":
                 st.session_state.inputs["supply_reduction"] *= 0.8
                 st.session_state.inputs["input_price_increase"] *= 0.85
                 st.session_state.inputs["dependency"] *= 0.85
                 st.session_state.inputs["flexibility"] *= 1.25
 
-            elif d2 == "redesign":
+            elif d2 == "Redesign EVs to be less reliant on lithium":
                 st.session_state.inputs["supply_reduction"] *= 0.9
                 st.session_state.inputs["input_price_increase"] *= 0.95
                 st.session_state.inputs["dependency"] *= 0.8
@@ -273,52 +224,3 @@ if st.session_state.shock_applied:
             st.write(f"Profit: £{round(prof2):,}")
 
             insights(d2, "AFTER DECISION 2")
-
-            # =========================================================
-            # FINAL SCORE (UNCHANGED LOGIC)
-            # =========================================================
-
-            recovery_vs_shock = pct(prof2, prof_s)
-            shock_score = recovery_vs_shock * 2
-            shock_score = max(0, min(shock_score, 100))
-
-            baseline_risk = base_inputs["dependency"] * base_inputs["supply_reduction"]
-            new_risk = st.session_state.inputs["dependency"] * st.session_state.inputs["supply_reduction"]
-
-            risk_delta = (baseline_risk - new_risk) / baseline_risk
-            resilience_score = max(0, min(risk_delta * 120, 100))
-
-            structural_score = {"diversify": 60, "integrate": 80, "redesign": 95}.get(d2, 40)
-            commercial_score = {"keep_prices": 45, "raise_prices": 70, "prioritise_high_margin": 85}.get(d1, 40)
-
-            base_score = (
-                shock_score * 0.30 +
-                resilience_score * 0.30 +
-                structural_score * 0.25 +
-                commercial_score * 0.15
-            )
-
-            multiplier = 1.0
-
-            if d1 == "prioritise_high_margin" and d2 == "redesign":
-                multiplier += 0.25
-            if d1 == "prioritise_high_margin" and d2 == "integrate":
-                multiplier += 0.18
-            if d1 == "raise_prices" and d2 == "diversify":
-                multiplier += 0.10
-
-            score = max(0, min(base_score * multiplier, 100))
-
-            st.markdown("---")
-            st.subheader("FINAL RESULTS")
-
-            st.write(f"Final Profit: £{round(prof2):,}")
-            st.write(f"Final Revenue: £{round(rev2):,}")
-            st.write(f"Final Production: {round(prod2):,}")
-
-            if score >= 80:
-                st.success("STRONG STRATEGY: effective trade-offs across risk and return.")
-            elif score >= 70:
-                st.warning("DEFENSIVE STRATEGY: stability preserved but not optimised.")
-            else:
-                st.error("HIGH RISK STRATEGY: structural vulnerabilities remain exposed.")
