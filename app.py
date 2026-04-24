@@ -12,8 +12,7 @@ if "started" not in st.session_state:
     st.session_state.started = False
 
 if not st.session_state.started:
-    st.title("STRATIOS
-    A PROTOTYPE STRATEGY ENGINE")
+    st.title("STRATIOS (PROTOTYPE): A STRATEGIC DECISION ENGINE")
 
     if st.button("Begin"):
         st.session_state.started = True
