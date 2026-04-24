@@ -97,9 +97,8 @@ def insights(choice, stage):
     elif choice == "redesign":
         st.write("Long-term resilience through reduced dependency.")
 
-
 # =========================================================
-# BASELINE
+# BASELINE (ONLY SHOW ON SHOCK SCREEN)
 # =========================================================
 
 base_prod = base_inputs["base_production"]
@@ -108,10 +107,11 @@ base_cost = base_inputs["base_unit_cost"]
 
 base_rev, base_profit = calc(base_prod, base_price, base_cost)
 
-st.subheader("BASELINE STATS")
-st.write(f"Production: {base_prod:,}")
-st.write(f"Revenue: £{base_rev:,}")
-st.write(f"Profit: £{base_profit:,}")
+if st.session_state.step == "shock":
+    st.subheader("BASELINE STATS")
+    st.write(f"Production: {base_prod:,}")
+    st.write(f"Revenue: £{base_rev:,}")
+    st.write(f"Profit: £{base_profit:,}")
 
 # =========================================================
 # STATE INIT
