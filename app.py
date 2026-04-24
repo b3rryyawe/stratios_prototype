@@ -109,7 +109,7 @@ base_cost = base_inputs["base_unit_cost"]
 
 base_rev, base_profit = calc(base_prod, base_price, base_cost)
 
-st.subheader("BASELINE STATE (PRE-SHOCK)")
+st.subheader("BASELINE STATS")
 st.write(f"Production: {base_prod:,}")
 st.write(f"Revenue: £{base_rev:,}")
 st.write(f"Profit: £{base_profit:,}")
@@ -138,12 +138,6 @@ if st.session_state.step == "shock":
             st.session_state.inputs, st.session_state.shock = shock_engine(st.session_state.inputs)
             st.rerun()
 
-    with col2:
-        if st.button("Continue"):
-            st.session_state.step = "post_shock"
-            st.rerun()
-
-
 # =========================================================
 # STEP 2 — POST SHOCK (LIVE DISPLAY, NO BUGS)
 # =========================================================
@@ -155,12 +149,17 @@ if st.session_state.step in ["shock", "post_shock", "decision_1", "after_d1", "d
 
     st.session_state.post_shock_results = (prod_s, rev_s, prof_s)
 
-    st.subheader("POST-SHOCK STATE")
+    st.subheader("POST-SHOCK STATS")
 
     st.write(f"Production: {round(prod_s):,} ({round(pct(prod_s, base_prod),2)}%)")
     st.write(f"Revenue: £{round(rev_s):,} ({round(pct(rev_s, base_rev),2)}%)")
     st.write(f"Profit: £{round(prof_s):,} ({round(pct(prof_s, base_profit),2)}%)")
 
+   with col1:
+        if st.button("Continue"):
+            st.session_state.step = "post_shock"
+            st.rerun()
+            
 # =========================================================
 # CONTINUE → DECISION 1
 # =========================================================
