@@ -109,7 +109,7 @@ base_cost = base_inputs["base_unit_cost"]
 base_rev, base_profit = calc(base_prod, base_price, base_cost)
 
 if st.session_state.step == "shock":
-    st.subheader("BASELINE STATS")
+    st.subheader("BASELINE")
     st.write(f"Production: {base_prod:,}")
     st.write(f"Revenue: £{base_rev:,}")
     st.write(f"Profit: £{base_profit:,}")
@@ -139,7 +139,7 @@ if st.session_state.step == "shock":
 
     st.session_state.post_shock_results = (prod_s, rev_s, prof_s)
 
-    st.subheader("POST-SHOCK STATS")
+    st.subheader("POST-SHOCK")
 
     st.write(f"Production: {round(prod_s):,} ({round(pct(prod_s, base_prod),2)}%)")
     st.write(f"Revenue: £{round(rev_s):,} ({round(pct(rev_s, base_rev),2)}%)")
@@ -156,7 +156,7 @@ if st.session_state.step == "shock":
 if st.session_state.step == "decision_1":
 
     st.markdown("---")
-    st.subheader("DECISION 1 — COMMERCIAL RESPONSE")
+    st.subheader("DECISION 1 — IMMEDIATE COMMERCIAL RESPONSE")
 
     d1 = st.radio(
         "Choose strategy:",
@@ -210,12 +210,12 @@ if st.session_state.step == "after_d1":
     st.write(f"Revenue: £{round(rev0):,}")
     st.write(f"Profit: £{round(prof0):,}")
 
-    st.markdown("### AFTER DECISION 1")
+    st.markdown("### AFTER IMMEDIATE COMMERCIAL RESPONSE")
     st.write(f"Production: {round(prod_s):,}")
     st.write(f"Revenue: £{round(rev1):,}")
     st.write(f"Profit: £{round(prof1):,}")
 
-    insights(st.session_state.d1, "AFTER DECISION 1")
+    insights(st.session_state.d1, "AFTER IMMEDIATE COMMERCIAL RESPONSE")
 
     if st.button("Continue"):
         st.session_state.step = "decision_2"
@@ -228,7 +228,7 @@ if st.session_state.step == "after_d1":
 if st.session_state.step == "decision_2":
 
     st.markdown("---")
-    st.subheader("DECISION 2 — STRUCTURAL RESPONSE")
+    st.subheader("DECISION 2 — LONG-TERM STRUCTURAL RESPONSE")
 
     d2 = st.radio(
         "Choose strategy:",
@@ -275,19 +275,19 @@ if st.session_state.step == "final":
     prod2, rev2, prof2 = st.session_state.final_results
     prod0, rev0, prof0 = st.session_state.post_shock_results
 
-    st.subheader("FINAL VIEW")
+    st.subheader("FINAL STATS")
 
     st.markdown("### POST-SHOCK")
     st.write(f"Production: {round(prod0):,}")
     st.write(f"Revenue: £{round(rev0):,}")
     st.write(f"Profit: £{round(prof0):,}")
 
-    st.markdown("### AFTER DECISION 1")
+    st.markdown("### AFTER IMMEDIATE COMMERCIAL RESPONSE")
     st.write(f"Production: {round(st.session_state.d1_results[0]):,}")
     st.write(f"Revenue: £{round(st.session_state.d1_results[1]):,}")
     st.write(f"Profit: £{round(st.session_state.d1_results[2]):,}")
 
-    st.markdown("### FINAL")
+    st.markdown("### AFTER LONG-TERM STRUCTURAL RESPONSE")
     st.write(f"Production: {round(prod2):,}")
     st.write(f"Revenue: £{round(rev2):,}")
     st.write(f"Profit: £{round(prof2):,}")
