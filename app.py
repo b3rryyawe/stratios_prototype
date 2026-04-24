@@ -87,26 +87,21 @@ def insights(choice, stage):
     st.subheader(f"STRATEGIC INSIGHTS — {stage}")
 
     if choice == "raise_prices":
-        st.write("Pricing increases margins but risks demand loss.")
-
+        st.write("Pricing power increases margin but risks demand loss.")
     elif choice == "keep_prices":
         st.write("Stable pricing protects share but compresses margins.")
-
     elif choice == "prioritise_high_margin":
-        st.write("Higher margins but reduced volume exposure.")
-
+        st.write("Higher margins with lower volume exposure.")
     elif choice == "diversify":
-        st.write("Reduces risk but increases short-term inefficiencies.")
-
+        st.write("Reduces risk but increases short-term inefficiency.")
     elif choice == "integrate":
         st.write("Greater control but higher capital exposure.")
-
     elif choice == "redesign":
-        st.write("Long-term resilience but transition cost risk.")
+        st.write("Long-term resilience through reduced dependency.")
 
 
 # =========================================================
-# BASELINE
+# BASELINE (ALWAYS VISIBLE)
 # =========================================================
 
 base_prod = base_inputs["base_production"]
@@ -127,6 +122,7 @@ st.write(f"Profit: £{base_profit:,}")
 if "inputs" not in st.session_state:
     st.session_state.inputs = copy.deepcopy(base_inputs)
     st.session_state.step = "shock"
+    st.session_state.post_shock_results = None
 
 # =========================================================
 # STEP 1 — SHOCK
@@ -139,15 +135,16 @@ if st.session_state.step == "shock":
         st.session_state.step = "post_shock"
         st.rerun()
 
-
 # =========================================================
-# STEP 2 — POST SHOCK
+# STEP 2 — POST SHOCK (NOW STORED + ALWAYS SHOWN)
 # =========================================================
 
-elif st.session_state.step == "post_shock":
+if st.session_state.step in ["post_shock", "decision_1", "after_d1", "decision_2", "final"]:
 
     prod_s, cost_s = model(st.session_state.inputs)
     rev_s, prof_s = calc(prod_s, base_price, cost_s)
+
+    st.session_state.post_shock_results = (prod_s, rev_s, prof_s)
 
     st.subheader("POST-SHOCK STATE")
 
@@ -155,17 +152,23 @@ elif st.session_state.step == "post_shock":
     st.write(f"Revenue: £{round(rev_s):,} ({round(pct(rev_s, base_rev),2)}%)")
     st.write(f"Profit: £{round(prof_s):,} ({round(pct(prof_s, base_profit),2)}%)")
 
+# =========================================================
+# CONTINUE → DECISION 1
+# =========================================================
+
+if st.session_state.step == "post_shock":
+
     if st.button("Continue"):
         st.session_state.step = "decision_1"
         st.rerun()
 
-
 # =========================================================
-# STEP 3 — DECISION 1
+# DECISION 1
 # =========================================================
 
-elif st.session_state.step == "decision_1":
+if st.session_state.step == "decision_1":
 
+    st.markdown("---")
     st.subheader("DECISION 1 — COMMERCIAL RESPONSE")
 
     d1 = st.radio(
@@ -200,12 +203,11 @@ elif st.session_state.step == "decision_1":
         st.session_state.step = "after_d1"
         st.rerun()
 
-
 # =========================================================
-# STEP 4 — AFTER DECISION 1
+# AFTER DECISION 1
 # =========================================================
 
-elif st.session_state.step == "after_d1":
+if st.session_state.step == "after_d1":
 
     prod_s, rev1, prof1 = st.session_state.d1_results
 
@@ -221,13 +223,13 @@ elif st.session_state.step == "after_d1":
         st.session_state.step = "decision_2"
         st.rerun()
 
-
 # =========================================================
-# STEP 5 — DECISION 2
+# DECISION 2
 # =========================================================
 
-elif st.session_state.step == "decision_2":
+if st.session_state.step == "decision_2":
 
+    st.markdown("---")
     st.subheader("DECISION 2 — STRUCTURAL RESPONSE")
 
     d2 = st.radio(
@@ -265,12 +267,11 @@ elif st.session_state.step == "decision_2":
         st.session_state.step = "final"
         st.rerun()
 
-
 # =========================================================
-# STEP 6 — FINAL
+# FINAL PAGE
 # =========================================================
 
-elif st.session_state.step == "final":
+if st.session_state.step == "final":
 
     prod2, rev2, prof2 = st.session_state.final_results
 
@@ -280,7 +281,7 @@ elif st.session_state.step == "final":
     st.write(f"Final Revenue: £{round(rev2):,}")
     st.write(f"Final Profit: £{round(prof2):,}")
 
-    recovery_vs_shock = pct(prof2, calc(*model(st.session_state.inputs), base_price)[1])
+    recovery_vs_shock = pct(prof2, st.session_state.post_shock_results[2])
 
     shock_score = max(0, min(recovery_vs_shock * 2, 100))
 
