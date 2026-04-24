@@ -169,7 +169,7 @@ if st.session_state.step == "post_shock":
 if st.session_state.step == "decision_1":
 
     st.markdown("---")
-    st.subheader("DECISION 1 — COMMERCIAL RESPONSE")
+    st.subheader("DECISION 1 — IMMEDIATE COMMERCIAL RESPONSE")
 
     d1 = st.radio(
         "Choose strategy:",
