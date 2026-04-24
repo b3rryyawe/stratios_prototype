@@ -85,7 +85,7 @@ def pct(new, old):
 
 def insights(choice, stage):
     st.markdown("---")
-    st.subheader(f"STRATEGIC INSIGHTS — {stage}")
+    st.subheader(f"INSIGHTS")
 
     if choice == "Raise prices by 10%":
         st.write(
