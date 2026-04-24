@@ -123,11 +123,12 @@ if "inputs" not in st.session_state:
     st.session_state.step = "shock"
     st.session_state.post_shock_results = None
 
-# =========================================================
-# STEP 1 — SHOCK (REPEATABLE + LIVE UPDATE)
+## =========================================================
+# STEP 1 — SHOCK 
 # =========================================================
 
 if st.session_state.step == "shock":
+
 
     st.write("You may apply multiple randomised shocks before continuing.")
 
@@ -138,11 +139,12 @@ if st.session_state.step == "shock":
             st.session_state.inputs, st.session_state.shock = shock_engine(st.session_state.inputs)
             st.rerun()
 
+
 # =========================================================
-# STEP 2 — POST SHOCK (LIVE DISPLAY, NO BUGS)
+ STEP 2 — POST-SHOCK DISPLAY
 # =========================================================
 
-if st.session_state.step in ["shock", "post_shock", "decision_1", "after_d1", "decision_2", "final"]:
+if st.session_state.step == "shock":
 
     prod_s, cost_s = model(st.session_state.inputs)
     rev_s, prof_s = calc(prod_s, base_price, cost_s)
@@ -155,11 +157,12 @@ if st.session_state.step in ["shock", "post_shock", "decision_1", "after_d1", "d
     st.write(f"Revenue: £{round(rev_s):,} ({round(pct(rev_s, base_rev),2)}%)")
     st.write(f"Profit: £{round(prof_s):,} ({round(pct(prof_s, base_profit),2)}%)")
 
-   with col1:
-        if st.button("Continue"):
-            st.session_state.step = "post_shock"
-            st.rerun()
-            
+    # CONTINUE BUTTON MOVED HERE (AFTER STATS)
+    if st.button("Continue"):
+        st.session_state.step = "post_shock"
+        st.rerun()
+
+
 # =========================================================
 # CONTINUE → DECISION 1
 # =========================================================
