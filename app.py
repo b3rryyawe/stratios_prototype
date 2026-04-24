@@ -124,15 +124,26 @@ if "inputs" not in st.session_state:
     st.session_state.post_shock_results = None
 
 # =========================================================
-# STEP 1 — SHOCK
+# STEP 1 — SHOCK (REPEATABLE)
 # =========================================================
 
 if st.session_state.step == "shock":
 
-    if st.button("Apply Randomised Shock"):
-        st.session_state.inputs, st.session_state.shock = shock_engine(base_inputs)
-        st.session_state.step = "post_shock"
-        st.rerun()
+    st.subheader("APPLY MARKET SHOCKS")
+
+    st.write("You may apply multiple randomised shocks before continuing.")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button("Apply Randomised Shock"):
+            st.session_state.inputs, st.session_state.shock = shock_engine(st.session_state.inputs)
+            st.rerun()
+
+    with col2:
+        if st.button("Continue"):
+            st.session_state.step = "post_shock"
+            st.rerun()
 
 # =========================================================
 # STEP 2 — POST SHOCK (NOW STORED + ALWAYS SHOWN)
