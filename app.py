@@ -141,7 +141,7 @@ if st.session_state.step == "shock":
 
 
 # =========================================================
- STEP 2 — POST-SHOCK DISPLAY
+# STEP 2 — POST-SHOCK DISPLAY
 # =========================================================
 
 if st.session_state.step == "shock":
