@@ -273,7 +273,7 @@ if st.session_state.step == "final":
     prod2, rev2, prof2 = st.session_state.final_results
     prod0, rev0, prof0 = st.session_state.post_shock_results
 
-    st.subheader("FINAL STATS")
+    st.title("FINAL STATS")
 
     st.markdown("### POST-SHOCK")
     st.write(f"Production: {round(prod0):,}")
