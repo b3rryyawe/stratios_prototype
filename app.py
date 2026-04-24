@@ -12,7 +12,7 @@ if "started" not in st.session_state:
     st.session_state.started = False
 
 if not st.session_state.started:
-    st.title("STRATIOS | PROTOTYPE STRATEGY ENGINE")
+    st.title("STRATIOS |  STRATEGY ENGINE PROTOTYPE")
 
     if st.button("Begin"):
         st.session_state.started = True
@@ -85,7 +85,7 @@ def pct(new, old):
 
 def insights(choice, stage):
     st.markdown("---")
-    st.subheader(f"STRATEGIC INSIGHTS — {stage}")
+    st.subheader(f"INSIGHTS")
 
     if choice == "Raise prices by 10%":
         st.write(
