@@ -85,19 +85,85 @@ def pct(new, old):
 
 def insights(choice, stage):
     st.markdown("---")
+    st.subheader(f"STRATEGIC INSIGHTS — {stage}")
 
-    if choice == "raise_prices":
-        st.write("Pricing power increases margin but risks demand loss.")
-    elif choice == "keep_prices":
-        st.write("Stable pricing protects share but compresses margins.")
-    elif choice == "prioritise_high_margin":
-        st.write("Higher margins with lower volume exposure.")
-    elif choice == "diversify":
-        st.write("Reduces risk but increases short-term inefficiency.")
-    elif choice == "integrate":
-        st.write("Greater control but higher capital exposure.")
-    elif choice == "redesign":
-        st.write("Long-term resilience through reduced dependency.")
+    if choice == "Raise prices by 10%":
+        st.write(
+            "You chose to leverage pricing power as a short-term buffer against input cost shocks.\n\n"
+            "**Pros:**\n"
+            "- Immediately improves revenue per unit and protects headline margins\n"
+            "- Signals premium positioning and brand strength in a constrained market\n"
+            "- Helps offset short-term supply-driven cost inflation\n\n"
+            "**Cons:**\n"
+            "- Increases demand elasticity risk, particularly in price-sensitive EV segments\n"
+            "- Potential acceleration of customer switching to competitors or substitutes\n"
+            "- May weaken long-term market share if competitors maintain stable pricing"
+        )
+
+    elif choice == "Keep prices stable":
+        st.write(
+            "You chose to protect volume stability over margin expansion, and absorb cost shocks internally.\n\n"
+            "**Pros:**\n"
+            "- Preserves market share and customer demand continuity\n"
+            "- Maintains competitive positioning in a price-sensitive environment\n"
+            "- Reduces risk of demand contraction in the short term\n\n"
+            "**Cons:**\n"
+            "- Direct compression of margins under higher input costs\n"
+            "- Profitability becomes more sensitive to further supply shocks\n"
+            "- Limits ability to pass through inflationary pressures to customers"
+        )
+
+    elif choice == "Prioritise higher-margin models":
+        st.write(
+            "You chose to actively rebalance the firm's portfolio toward higher-margin output, prioritising profitability over volume.\n\n"
+            "**Pros:**\n"
+            "- Improves unit economics and overall margin structure\n"
+            "- Enhances capital efficiency and returns on production\n"
+            "- Strengthens financial resilience in constrained environments\n\n"
+            "**Cons:**\n"
+            "- Reduced production volume limits economies of scale\n"
+            "- Weakens competitive positioning in mass-market segments\n"
+            "- Higher reliance on niche demand increases volatility exposure"
+        )
+
+    elif choice == "Diversify supply chain":
+        st.write(
+            "You chose to reduce structural dependency on a single supply base through diversification of inputs.\n\n"
+            "**Pros:**\n"
+            "- Reduces exposure to geopolitical and supply-side shocks\n"
+            "- Improves long-term supply chain resilience and optionality\n"
+            "- Strengthens negotiating power with upstream suppliers\n\n"
+            "**Cons:**\n"
+            "- Higher short-term procurement and transition costs\n"
+            "- Potential inefficiencies from fragmented supply networks\n"
+            "- Longer implementation timelines before benefits fully materialise"
+        )
+
+    elif choice == "Integrate vertically by investing in mining and refining":
+        st.write(
+            "You chose to integrate to internalise key parts of the supply chain and reduce external dependency.\n\n"
+            "**Pros:**\n"
+            "- Greater control over critical inputs and production stability\n"
+            "- Improved margin capture by eliminating intermediary costs\n"
+            "- Enhanced strategic autonomy in volatile markets\n\n"
+            "**Cons:**\n"
+            "- Significant increase in fixed capital investment requirements\n"
+            "- Reduced operational flexibility under demand fluctuations\n"
+            "- Higher exposure if internalised assets become inefficient"
+        )
+
+    elif choice == "Redesign EV to be less reliant on lithium":
+        st.write(
+            "The firm is structurally reducing lithium intensity through product redesign.\n\n"
+            "**Pros:**\n"
+            "- Reduces long-term dependency on constrained inputs\n"
+            "- Improves strategic resilience against future shocks\n"
+            "- Enhances technological differentiation\n\n"
+            "**Cons:**\n"
+            "- Higher short-term R&D and retooling costs\n"
+            "- Temporary production inefficiencies during transition\n"
+            "- Execution risk if redesign underperforms"
+        )
 
 # =========================================================
 # BASELINE (ONLY SHOW ON SHOCK SCREEN)
@@ -131,12 +197,10 @@ if "inputs" not in st.session_state:
 
 if st.session_state.step == "shock":
 
-    # SHOW BUTTON FIRST
     if st.button("Apply Randomised Shock"):
         st.session_state.inputs, st.session_state.shock = shock_engine(st.session_state.inputs)
         st.session_state.shock_applied = True
 
-    # ONLY SHOW STATS AFTER FIRST CLICK
     if st.session_state.shock_applied:
 
         prod_s, cost_s = model(st.session_state.inputs)
@@ -154,7 +218,7 @@ if st.session_state.step == "shock":
         if st.button("Continue"):
             st.session_state.step = "decision_1"
             st.rerun()
-            
+
 # =========================================================
 # DECISION 1
 # =========================================================
