@@ -24,7 +24,9 @@ if not st.session_state.started:
 # CONTEXT 
 # =========================================================
 
-st.markdown(""" You are the CEO of a global EV manufacturer, dependant on lithium supplied from Sub-Saharan Africa. Recent armed conflict in the region has led to insurgents seizing key mining sites, and cutting transport routes to export ports. As a result, your firm experiences a shock
+st.markdown(""" You are the CEO of a global EV manufacturer, dependant on lithium supplied from Sub-Saharan Africa. 
+Recent armed conflict in the region has led to insurgents seizing key mining sites, and cutting transport routes to export ports. 
+Your firm experiences a shock.
 """)
 
 # =========================================================
