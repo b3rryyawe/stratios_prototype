@@ -145,7 +145,6 @@ if st.session_state.step == "shock":
 # =========================================================
 
 if st.session_state.step == "shock":
-
     prod_s, cost_s = model(st.session_state.inputs)
     rev_s, prof_s = calc(prod_s, base_price, cost_s)
 
