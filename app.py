@@ -129,8 +129,6 @@ if "inputs" not in st.session_state:
 
 if st.session_state.step == "shock":
 
-    st.subheader("APPLY MARKET SHOCKS")
-
     st.write("You may apply multiple randomised shocks before continuing.")
 
     col1, col2 = st.columns(2)
