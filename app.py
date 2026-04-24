@@ -203,7 +203,7 @@ if st.button("Apply Shock"):
     st.session_state.shock_applied = True
 
 if st.session_state.shock_applied:
-    st.success(f"Shock Applied — multiplier: {round(st.session_state.shock,2)}")
+
 
     prod_s, cost_s = model(st.session_state.inputs)
     rev_s, prof_s = calc(prod_s, base_price, cost_s)
