@@ -124,7 +124,7 @@ if "inputs" not in st.session_state:
     st.session_state.post_shock_results = None
 
 # =========================================================
-# STEP 1 — SHOCK (REPEATABLE)
+# STEP 1 — SHOCK (REPEATABLE + LIVE UPDATE)
 # =========================================================
 
 if st.session_state.step == "shock":
@@ -145,11 +145,12 @@ if st.session_state.step == "shock":
             st.session_state.step = "post_shock"
             st.rerun()
 
+
 # =========================================================
-# STEP 2 — POST SHOCK (NOW STORED + ALWAYS SHOWN)
+# STEP 2 — POST SHOCK (LIVE DISPLAY, NO BUGS)
 # =========================================================
 
-if st.session_state.step in ["post_shock", "decision_1", "after_d1", "decision_2", "final"]:
+if st.session_state.step in ["shock", "post_shock", "decision_1", "after_d1", "decision_2", "final"]:
 
     prod_s, cost_s = model(st.session_state.inputs)
     rev_s, prof_s = calc(prod_s, base_price, cost_s)
