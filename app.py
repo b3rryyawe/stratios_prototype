@@ -28,8 +28,8 @@ if not st.session_state.started:
 
 if st.session_state.step == "shock":
     st.markdown(""" 
-    You are the CEO of a global EV manufacturer, dependant on lithium supplied from Sub-Saharan Africa. 
-    Recent armed conflict in the region has led to insurgents seizing key mining sites, and cutting transport routes to export ports. 
+    You are the CEO of a global EV manufacturer, dependant on a stable lithium supply. 
+    Recent armed conflict in your supply region has led to insurgents seizing key mining sites, and cutting transport routes to export ports. 
     Your firm experiences a shock.
     """)
 
@@ -141,7 +141,7 @@ def insights(choice, stage):
 
     elif choice == "Integrate vertically by investing in mining and refining":
         st.write(
-            "You chose to integrate to internalise key parts of the supply chain and reduce external dependency.\n\n"
+            "You chose to integrate and internalise key parts of the supply chain and reduce external dependency.\n\n"
             "**Pros:**\n"
             "- Greater control over critical inputs and production stability\n"
             "- Improved margin capture by eliminating intermediary costs\n"
@@ -154,7 +154,7 @@ def insights(choice, stage):
 
     elif choice == "Redesign EV to be less reliant on lithium":
         st.write(
-            "The firm is structurally reducing lithium intensity through product redesign.\n\n"
+            "You chose to structurally reduce lithium intensity through product redesign.\n\n"
             "**Pros:**\n"
             "- Reduces long-term dependency on constrained inputs\n"
             "- Improves strategic resilience against future shocks\n"
