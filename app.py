@@ -84,7 +84,6 @@ def pct(new, old):
 def insights(choice, stage):
 
     st.markdown("---")
-    st.subheader(f"STRATEGIC INSIGHTS — {stage}")
 
     if choice == "raise_prices":
         st.write("Pricing power increases margin but risks demand loss.")
@@ -130,7 +129,7 @@ if "inputs" not in st.session_state:
 
 if st.session_state.step == "shock":
 
-    if st.button("Apply Shock"):
+    if st.button("Apply Randomised Shock"):
         st.session_state.inputs, st.session_state.shock = shock_engine(base_inputs)
         st.session_state.step = "post_shock"
         st.rerun()
@@ -173,20 +172,20 @@ if st.session_state.step == "decision_1":
 
     d1 = st.radio(
         "Choose strategy:",
-        ["raise_prices", "keep_prices", "prioritise_high_margin"]
+        ["Raise prices by 10%", "Keep prices stable", "Prioritise higher-margin models"]
     )
 
     if st.button("Continue"):
 
-        if d1 == "raise_prices":
+        if d1 == "rRaise prices by 10%":
             base_price *= 1.10
             base_prod *= 0.98
             base_cost *= 1.00
 
-        elif d1 == "keep_prices":
+        elif d1 == "Keep prices stable":
             base_cost *= 1.02
 
-        elif d1 == "prioritise_high_margin":
+        elif d1 == "Prioritise higher-margin models":
             base_price *= 1.05
             base_prod *= 0.85
             base_cost *= 0.95
@@ -230,28 +229,28 @@ if st.session_state.step == "after_d1":
 if st.session_state.step == "decision_2":
 
     st.markdown("---")
-    st.subheader("DECISION 2 — STRUCTURAL RESPONSE")
+    st.subheader("DECISION 2 — LONG-TERM STRUCTURAL RESPONSE")
 
     d2 = st.radio(
         "Choose strategy:",
-        ["redesign", "diversify", "integrate"]
+        ["Redesign EV to be less reliant on lithium", "Diversify supply chain", "Integrate vertically by investing in mining and refining"]
     )
 
     if st.button("Continue"):
 
-        if d2 == "diversify":
+        if d2 == "Diversify supply chain":
             st.session_state.inputs["supply_reduction"] *= 0.6
             st.session_state.inputs["input_price_increase"] *= 0.7
             st.session_state.inputs["dependency"] *= 0.75
             st.session_state.inputs["flexibility"] *= 1.1
 
-        elif d2 == "integrate":
+        elif d2 == "Integrate vertically by investing in mining and refining":
             st.session_state.inputs["supply_reduction"] *= 0.8
             st.session_state.inputs["input_price_increase"] *= 0.85
             st.session_state.inputs["dependency"] *= 0.85
             st.session_state.inputs["flexibility"] *= 1.25
 
-        elif d2 == "redesign":
+        elif d2 == "Redesign EV to be less reliant on lithium":
             st.session_state.inputs["supply_reduction"] *= 0.9
             st.session_state.inputs["input_price_increase"] *= 0.95
             st.session_state.inputs["dependency"] *= 0.8
