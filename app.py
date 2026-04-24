@@ -85,7 +85,7 @@ def pct(new, old):
 
 def insights(choice, stage):
     st.markdown("---")
-    st.subheader(f"INSIGHTS")
+    st.subheader(f"STRATEGIC INSIGHTS — {stage}")
 
     if choice == "Raise prices by 10%":
         st.write(
@@ -192,7 +192,7 @@ if "inputs" not in st.session_state:
     st.session_state.shock_applied = False
 
 # =========================================================
-# STEP 1 — SHOCK (FIXED REPEATABLE FLOW)
+# STEP 1 — SHOCK
 # =========================================================
 
 if st.session_state.step == "shock":
@@ -256,14 +256,26 @@ if st.session_state.step == "decision_1":
 
         st.session_state.d1_results = (prod_s, rev1, prof1)
 
-        st.session_state.step = "after_d1"
+        st.session_state.step = "d1_insights"
         st.rerun()
 
 # =========================================================
-# AFTER DECISION 1
+# DECISION 1 INSIGHTS PAGE
 # =========================================================
 
-if st.session_state.step == "after_d1":
+if st.session_state.step == "d1_insights":
+
+    insights(st.session_state.d1, "DECISION 1")
+
+    if st.button("Continue"):
+        st.session_state.step = "d1_summary"
+        st.rerun()
+
+# =========================================================
+# DECISION 1 SUMMARY PAGE
+# =========================================================
+
+if st.session_state.step == "d1_summary":
 
     prod_s, rev1, prof1 = st.session_state.d1_results
     prod0, rev0, prof0 = st.session_state.post_shock_results
@@ -282,8 +294,6 @@ if st.session_state.step == "after_d1":
     st.write(f"Production: {round(prod_s):,}")
     st.write(f"Revenue: £{round(rev1):,}")
     st.write(f"Profit: £{round(prof1):,}")
-
-    insights(st.session_state.d1, "AFTER IMMEDIATE COMMERCIAL RESPONSE")
 
     if st.button("Continue"):
         st.session_state.step = "decision_2"
@@ -331,6 +341,18 @@ if st.session_state.step == "decision_2":
 
         st.session_state.final_results = (prod2, rev2, prof2)
 
+        st.session_state.step = "d2_insights"
+        st.rerun()
+
+# =========================================================
+# DECISION 2 INSIGHTS PAGE
+# =========================================================
+
+if st.session_state.step == "d2_insights":
+
+    insights(st.session_state.d2, "DECISION 2")
+
+    if st.button("Continue"):
         st.session_state.step = "final"
         st.rerun()
 
