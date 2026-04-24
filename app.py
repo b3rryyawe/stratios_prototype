@@ -123,31 +123,162 @@ if "inputs" not in st.session_state:
     st.session_state.step = "shock"
     st.session_state.post_shock_results = None
 
+import copy
+import random
+import streamlit as st
+
+st.set_page_config(page_title="STRATIOS", layout="wide")
+
 # =========================================================
-# STEP 1 — SHOCK (FIXED FLOW)
+# START SCREEN
+# =========================================================
+
+if "started" not in st.session_state:
+    st.session_state.started = False
+
+if not st.session_state.started:
+    st.title("STRATIOS | PROTOTYPE STRATEGY ENGINE")
+
+    if st.button("Begin"):
+        st.session_state.started = True
+        st.session_state.step = "shock"
+        st.session_state.shock_applied = False
+        st.rerun()
+
+    st.stop()
+
+# =========================================================
+# CONTEXT
+# =========================================================
+
+if st.session_state.step == "shock":
+    st.markdown(""" 
+    You are the CEO of a global EV manufacturer, dependant on lithium supplied from Sub-Saharan Africa. 
+    Recent armed conflict in the region has led to insurgents seizing key mining sites, and cutting transport routes to export ports. 
+    Your firm experiences a shock.
+    """)
+
+# =========================================================
+# BASE INPUTS
+# =========================================================
+
+base_inputs = {
+    "base_production": 100000,
+    "base_price": 40000,
+    "base_unit_cost": 30000,
+    "supply_reduction": 0.35,
+    "input_price_increase": 0.45,
+    "dependency": 0.65,
+    "flexibility": 0.40
+}
+
+# =========================================================
+# FUNCTIONS
+# =========================================================
+
+def shock_engine(inputs):
+    shock = random.uniform(0.85, 1.15)
+
+    new_inputs = copy.deepcopy(inputs)
+    new_inputs["supply_reduction"] *= shock
+    new_inputs["input_price_increase"] *= shock
+
+    return new_inputs, shock
+
+
+def model(inputs):
+    production = inputs["base_production"] * (
+        1 - inputs["supply_reduction"] * inputs["dependency"] * (1 - inputs["flexibility"])
+    )
+
+    cost = inputs["base_unit_cost"] * (
+        1 + inputs["input_price_increase"] * inputs["dependency"]
+    )
+
+    return production, cost
+
+
+def calc(prod, price, cost):
+    revenue = prod * price
+    profit = revenue - (prod * cost)
+    return revenue, profit
+
+
+def pct(new, old):
+    return ((new - old) / old) * 100
+
+
+def insights(choice, stage):
+    st.markdown("---")
+
+    if choice == "raise_prices":
+        st.write("Pricing power increases margin but risks demand loss.")
+    elif choice == "keep_prices":
+        st.write("Stable pricing protects share but compresses margins.")
+    elif choice == "prioritise_high_margin":
+        st.write("Higher margins with lower volume exposure.")
+    elif choice == "diversify":
+        st.write("Reduces risk but increases short-term inefficiency.")
+    elif choice == "integrate":
+        st.write("Greater control but higher capital exposure.")
+    elif choice == "redesign":
+        st.write("Long-term resilience through reduced dependency.")
+
+# =========================================================
+# BASELINE (ONLY SHOW ON SHOCK SCREEN)
+# =========================================================
+
+base_prod = base_inputs["base_production"]
+base_price = base_inputs["base_price"]
+base_cost = base_inputs["base_unit_cost"]
+
+base_rev, base_profit = calc(base_prod, base_price, base_cost)
+
+if st.session_state.step == "shock":
+    st.subheader("BASELINE")
+    st.write(f"Production: {base_prod:,}")
+    st.write(f"Revenue: £{base_rev:,}")
+    st.write(f"Profit: £{base_profit:,}")
+
+# =========================================================
+# STATE INIT
+# =========================================================
+
+if "inputs" not in st.session_state:
+    st.session_state.inputs = copy.deepcopy(base_inputs)
+    st.session_state.step = "shock"
+    st.session_state.post_shock_results = None
+    st.session_state.shock_applied = False
+
+# =========================================================
+# STEP 1 — SHOCK (FIXED REPEATABLE FLOW)
 # =========================================================
 
 if st.session_state.step == "shock":
 
+    # SHOW BUTTON FIRST
     if st.button("Apply Randomised Shock"):
         st.session_state.inputs, st.session_state.shock = shock_engine(st.session_state.inputs)
-        st.rerun()
+        st.session_state.shock_applied = True
 
-    # ALWAYS SHOW CURRENT POST-SHOCK STATE
-    prod_s, cost_s = model(st.session_state.inputs)
-    rev_s, prof_s = calc(prod_s, base_price, cost_s)
+    # ONLY SHOW STATS AFTER FIRST CLICK
+    if st.session_state.shock_applied:
 
-    st.session_state.post_shock_results = (prod_s, rev_s, prof_s)
+        prod_s, cost_s = model(st.session_state.inputs)
+        rev_s, prof_s = calc(prod_s, base_price, cost_s)
 
-    st.subheader("POST-SHOCK")
+        st.session_state.post_shock_results = (prod_s, rev_s, prof_s)
 
-    st.write(f"Production: {round(prod_s):,} ({round(pct(prod_s, base_prod),2)}%)")
-    st.write(f"Revenue: £{round(rev_s):,} ({round(pct(rev_s, base_rev),2)}%)")
-    st.write(f"Profit: £{round(prof_s):,} ({round(pct(prof_s, base_profit),2)}%)")
+        st.subheader("POST-SHOCK")
 
-    if st.button("Continue"):
-        st.session_state.step = "decision_1"
-        st.rerun()
+        st.write(f"Production: {round(prod_s):,} ({round(pct(prod_s, base_prod),2)}%)")
+        st.write(f"Revenue: £{round(rev_s):,} ({round(pct(rev_s, base_rev),2)}%)")
+        st.write(f"Profit: £{round(prof_s):,} ({round(pct(prof_s, base_profit),2)}%)")
+
+    if st.session_state.shock_applied:
+        if st.button("Continue"):
+            st.session_state.step = "decision_1"
+            st.rerun()
 
 # =========================================================
 # DECISION 1
