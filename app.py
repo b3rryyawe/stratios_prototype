@@ -1,6 +1,6 @@
-import streamlit as st
 import copy
 import random
+import streamlit as st
 
 st.set_page_config(page_title="STRATIOS", layout="wide")
 
@@ -46,7 +46,7 @@ base_inputs = {
 }
 
 # =========================================================
-# FUNCTIONS 
+# FUNCTIONS
 # =========================================================
 
 def shock_engine(inputs):
@@ -82,7 +82,6 @@ def pct(new, old):
 
 
 def insights(choice, stage):
-
     st.markdown("---")
 
     if choice == "raise_prices":
@@ -100,7 +99,7 @@ def insights(choice, stage):
 
 
 # =========================================================
-# BASELINE (ALWAYS VISIBLE)
+# BASELINE
 # =========================================================
 
 base_prod = base_inputs["base_production"]
@@ -123,28 +122,19 @@ if "inputs" not in st.session_state:
     st.session_state.step = "shock"
     st.session_state.post_shock_results = None
 
-## =========================================================
-# STEP 1 — SHOCK 
+# =========================================================
+# STEP 1 — SHOCK (FIXED FLOW)
 # =========================================================
 
 if st.session_state.step == "shock":
 
+    st.subheader("APPLY RANDOMISED SHOCKS")
 
-    st.write("You may apply multiple randomised shocks before continuing.")
+    if st.button("Apply Randomised Shock"):
+        st.session_state.inputs, st.session_state.shock = shock_engine(st.session_state.inputs)
+        st.rerun()
 
-    col1, col2 = st.columns(2)
-
-    with col1:
-        if st.button("Apply Randomised Shock"):
-            st.session_state.inputs, st.session_state.shock = shock_engine(st.session_state.inputs)
-            st.rerun()
-
-
-# =========================================================
-# STEP 2 — POST-SHOCK DISPLAY
-# =========================================================
-
-if st.session_state.step == "shock":
+    # ALWAYS SHOW CURRENT POST-SHOCK STATE
     prod_s, cost_s = model(st.session_state.inputs)
     rev_s, prof_s = calc(prod_s, base_price, cost_s)
 
@@ -155,18 +145,6 @@ if st.session_state.step == "shock":
     st.write(f"Production: {round(prod_s):,} ({round(pct(prod_s, base_prod),2)}%)")
     st.write(f"Revenue: £{round(rev_s):,} ({round(pct(rev_s, base_rev),2)}%)")
     st.write(f"Profit: £{round(prof_s):,} ({round(pct(prof_s, base_profit),2)}%)")
-
-    # CONTINUE BUTTON MOVED HERE (AFTER STATS)
-    if st.button("Continue"):
-        st.session_state.step = "post_shock"
-        st.rerun()
-
-
-# =========================================================
-# CONTINUE → DECISION 1
-# =========================================================
-
-if st.session_state.step == "post_shock":
 
     if st.button("Continue"):
         st.session_state.step = "decision_1"
@@ -179,7 +157,7 @@ if st.session_state.step == "post_shock":
 if st.session_state.step == "decision_1":
 
     st.markdown("---")
-    st.subheader("DECISION 1 — IMMEDIATE COMMERCIAL RESPONSE")
+    st.subheader("DECISION 1 — COMMERCIAL RESPONSE")
 
     d1 = st.radio(
         "Choose strategy:",
@@ -188,10 +166,9 @@ if st.session_state.step == "decision_1":
 
     if st.button("Continue"):
 
-        if d1 == "rRaise prices by 10%":
+        if d1 == "Raise prices by 10%":
             base_price *= 1.10
             base_prod *= 0.98
-            base_cost *= 1.00
 
         elif d1 == "Keep prices stable":
             base_cost *= 1.02
@@ -220,9 +197,21 @@ if st.session_state.step == "decision_1":
 if st.session_state.step == "after_d1":
 
     prod_s, rev1, prof1 = st.session_state.d1_results
+    prod0, rev0, prof0 = st.session_state.post_shock_results
 
-    st.subheader("AFTER DECISION 1")
+    st.subheader("SUMMARY VIEW")
 
+    st.markdown("### Baseline")
+    st.write(f"Production: {base_prod:,}")
+    st.write(f"Revenue: £{base_rev:,}")
+    st.write(f"Profit: £{base_profit:,}")
+
+    st.markdown("### Post-Shock")
+    st.write(f"Production: {round(prod0):,}")
+    st.write(f"Revenue: £{round(rev0):,}")
+    st.write(f"Profit: £{round(prof0):,}")
+
+    st.markdown("### After Decision 1")
     st.write(f"Production: {round(prod_s):,}")
     st.write(f"Revenue: £{round(rev1):,}")
     st.write(f"Profit: £{round(prof1):,}")
@@ -240,11 +229,15 @@ if st.session_state.step == "after_d1":
 if st.session_state.step == "decision_2":
 
     st.markdown("---")
-    st.subheader("DECISION 2 — LONG-TERM STRUCTURAL RESPONSE")
+    st.subheader("DECISION 2 — STRUCTURAL RESPONSE")
 
     d2 = st.radio(
         "Choose strategy:",
-        ["Redesign EV to be less reliant on lithium", "Diversify supply chain", "Integrate vertically by investing in mining and refining"]
+        [
+            "Redesign EV to be less reliant on lithium",
+            "Diversify supply chain",
+            "Integrate vertically by investing in mining and refining"
+        ]
     )
 
     if st.button("Continue"):
@@ -253,19 +246,16 @@ if st.session_state.step == "decision_2":
             st.session_state.inputs["supply_reduction"] *= 0.6
             st.session_state.inputs["input_price_increase"] *= 0.7
             st.session_state.inputs["dependency"] *= 0.75
-            st.session_state.inputs["flexibility"] *= 1.1
 
         elif d2 == "Integrate vertically by investing in mining and refining":
             st.session_state.inputs["supply_reduction"] *= 0.8
             st.session_state.inputs["input_price_increase"] *= 0.85
             st.session_state.inputs["dependency"] *= 0.85
-            st.session_state.inputs["flexibility"] *= 1.25
 
         elif d2 == "Redesign EV to be less reliant on lithium":
             st.session_state.inputs["supply_reduction"] *= 0.9
             st.session_state.inputs["input_price_increase"] *= 0.95
             st.session_state.inputs["dependency"] *= 0.8
-            st.session_state.inputs["flexibility"] *= 1.4
 
         st.session_state.d2 = d2
 
@@ -284,15 +274,20 @@ if st.session_state.step == "decision_2":
 if st.session_state.step == "final":
 
     prod2, rev2, prof2 = st.session_state.final_results
+    prod0, rev0, prof0 = st.session_state.post_shock_results
 
-    st.subheader("FINAL RESULTS")
+    st.subheader("FINAL VIEW")
 
-    st.write(f"Final Production: {round(prod2):,}")
-    st.write(f"Final Revenue: £{round(rev2):,}")
-    st.write(f"Final Profit: £{round(prof2):,}")
+    st.markdown("### Post-Shock")
+    st.write(f"Profit: £{round(prof0):,}")
 
-    recovery_vs_shock = pct(prof2, st.session_state.post_shock_results[2])
+    st.markdown("### After Decision 1")
+    st.write(f"Profit: £{round(st.session_state.d1_results[2]):,}")
 
+    st.markdown("### Final")
+    st.write(f"Profit: £{round(prof2):,}")
+
+    recovery_vs_shock = pct(prof2, prof0)
     shock_score = max(0, min(recovery_vs_shock * 2, 100))
 
     baseline_risk = base_inputs["dependency"] * base_inputs["supply_reduction"]
@@ -301,8 +296,13 @@ if st.session_state.step == "final":
     risk_delta = (baseline_risk - new_risk) / baseline_risk
     resilience_score = max(0, min(risk_delta * 120, 100))
 
-    structural_score = {"diversify": 60, "integrate": 80, "redesign": 95}.get(st.session_state.d2, 40)
-    commercial_score = {"keep_prices": 45, "raise_prices": 70, "prioritise_high_margin": 85}.get(st.session_state.d1, 40)
+    structural_score = {"Diversify supply chain": 60,
+                        "Integrate vertically by investing in mining and refining": 80,
+                        "Redesign EV to be less reliant on lithium": 95}.get(st.session_state.d2, 40)
+
+    commercial_score = {"Keep prices stable": 45,
+                        "Raise prices by 10%": 70,
+                        "Prioritise higher-margin models": 85}.get(st.session_state.d1, 40)
 
     base_score = (
         shock_score * 0.30 +
@@ -311,20 +311,17 @@ if st.session_state.step == "final":
         commercial_score * 0.15
     )
 
-    multiplier = 1.0
-
-    if st.session_state.d1 == "prioritise_high_margin" and st.session_state.d2 == "redesign":
-        multiplier += 0.25
-    if st.session_state.d1 == "prioritise_high_margin" and st.session_state.d2 == "integrate":
-        multiplier += 0.18
-    if st.session_state.d1 == "raise_prices" and st.session_state.d2 == "diversify":
-        multiplier += 0.10
-
-    score = max(0, min(base_score * multiplier, 100))
+    score = max(0, min(base_score, 100))
 
     if score >= 80:
-        st.success("STRONG STRATEGY: effective trade-offs across risk and return.")
+        st.success("STRONG STRATEGY - effective trade-offs across risk and return")
     elif score >= 70:
-        st.warning("DEFENSIVE STRATEGY: stability preserved but not optimised.")
+        st.warning("DEFENSIVE STRATEGY - stability preserved but not optimised")
     else:
-        st.error("HIGH RISK STRATEGY: structural vulnerabilities remain exposed.")
+        st.error("HIGH RISK STRATEGY - structural vulnerabilities remain exposed")
+
+  st.divider()
+
+    if st.button("Restart Simulation"):
+        st.session_state.clear()
+        st.rerun()
