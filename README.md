@@ -17,6 +17,7 @@ You play as CEO navigating:
 - Interactive Streamlit interface
 
 ## Built With
+- Microsoft Excel
 - Python
 - Streamlit
 
