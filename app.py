@@ -198,8 +198,6 @@ if st.session_state.step == "after_d1":
     prod_s, rev1, prof1 = st.session_state.d1_results
     prod0, rev0, prof0 = st.session_state.post_shock_results
 
-    st.subheader("SUMMARY VIEW")
-
     st.markdown("### BASELINE")
     st.write(f"Production: {base_prod:,}")
     st.write(f"Revenue: £{base_rev:,}")
