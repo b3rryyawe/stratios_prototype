@@ -320,7 +320,7 @@ if st.session_state.step == "final":
     else:
         st.error("HIGH RISK STRATEGY - structural vulnerabilities remain exposed")
 
-  st.divider()
+      st.divider()
 
     if st.button("Restart Simulation"):
         st.session_state.clear()
