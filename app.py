@@ -22,14 +22,15 @@ if not st.session_state.started:
     st.stop()
 
 # =========================================================
-# CONTEXT 
+# CONTEXT
 # =========================================================
 
-st.markdown(""" 
-You are the CEO of a global EV manufacturer, dependant on lithium supplied from Sub-Saharan Africa. 
-Recent armed conflict in the region has led to insurgents seizing key mining sites, and cutting transport routes to export ports. 
-Your firm experiences a shock.
-""")
+if st.session_state.step == "shock":
+    st.markdown(""" 
+    You are the CEO of a global EV manufacturer, dependant on lithium supplied from Sub-Saharan Africa. 
+    Recent armed conflict in the region has led to insurgents seizing key mining sites, and cutting transport routes to export ports. 
+    Your firm experiences a shock.
+    """)
 
 # =========================================================
 # BASE INPUTS
@@ -128,8 +129,6 @@ if "inputs" not in st.session_state:
 
 if st.session_state.step == "shock":
 
-    st.subheader("APPLY RANDOMISED SHOCKS")
-
     if st.button("Apply Randomised Shock"):
         st.session_state.inputs, st.session_state.shock = shock_engine(st.session_state.inputs)
         st.rerun()
@@ -201,17 +200,17 @@ if st.session_state.step == "after_d1":
 
     st.subheader("SUMMARY VIEW")
 
-    st.markdown("### Baseline")
+    st.markdown("### BASELINE")
     st.write(f"Production: {base_prod:,}")
     st.write(f"Revenue: £{base_rev:,}")
     st.write(f"Profit: £{base_profit:,}")
 
-    st.markdown("### Post-Shock")
+    st.markdown("### POST-SHOCK")
     st.write(f"Production: {round(prod0):,}")
     st.write(f"Revenue: £{round(rev0):,}")
     st.write(f"Profit: £{round(prof0):,}")
 
-    st.markdown("### After Decision 1")
+    st.markdown("### AFTER DECISION 1")
     st.write(f"Production: {round(prod_s):,}")
     st.write(f"Revenue: £{round(rev1):,}")
     st.write(f"Profit: £{round(prof1):,}")
@@ -278,13 +277,19 @@ if st.session_state.step == "final":
 
     st.subheader("FINAL VIEW")
 
-    st.markdown("### Post-Shock")
+    st.markdown("### POST-SHOCK")
+    st.write(f"Production: {round(prod0):,}")
+    st.write(f"Revenue: £{round(rev0):,}")
     st.write(f"Profit: £{round(prof0):,}")
 
-    st.markdown("### After Decision 1")
+    st.markdown("### AFTER DECISION 1")
+    st.write(f"Production: {round(st.session_state.d1_results[0]):,}")
+    st.write(f"Revenue: £{round(st.session_state.d1_results[1]):,}")
     st.write(f"Profit: £{round(st.session_state.d1_results[2]):,}")
 
-    st.markdown("### Final")
+    st.markdown("### FINAL")
+    st.write(f"Production: {round(prod2):,}")
+    st.write(f"Revenue: £{round(rev2):,}")
     st.write(f"Profit: £{round(prof2):,}")
 
     recovery_vs_shock = pct(prof2, prof0)
@@ -319,10 +324,6 @@ if st.session_state.step == "final":
         st.warning("DEFENSIVE STRATEGY - stability preserved but not optimised")
     else:
         st.error("HIGH RISK STRATEGY - structural vulnerabilities remain exposed")
-
-    # =========================================================
-    # RESTART BUTTON
-    # =========================================================
 
     if st.button("Restart Simulation"):
         for key in list(st.session_state.keys()):
